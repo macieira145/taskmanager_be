@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using CardExchange.Dto;
 
 namespace CardExchange.Entities;
 
@@ -13,11 +12,23 @@ public partial class Task
 
     public string Description { get; set; } = null!;
 
-    public bool? Completed { get; set; }
+    public bool Completed { get; set; }
 
     public DateTime Created { get; set; }
 
     public DateTime? Updated { get; set; }
 
-    public virtual User Users { get; set; } = null!;
+    public virtual User? User { get; set; }
+
+    public Task(int id)
+    {
+        this.Id = id;
+    }
+
+    public Task(TaskDTO taskDTO)
+    {
+        this.Title = taskDTO.Title;
+        this.Description = taskDTO.Description;
+        this.Completed = taskDTO.Completed;
+    }
 }

@@ -1,5 +1,6 @@
 ﻿using CardExchange.Entities;
 using CardExchange.Interfaces;
+using Microsoft.AspNetCore.Identity;
 
 namespace CardExchange.Repository
 {
@@ -9,6 +10,13 @@ namespace CardExchange.Repository
         public UserRepository(TaskmanagerContext context)
         {
             _context = context;
+        }
+
+        public bool CreateUser(User user)
+        {
+            _context.Add(user);
+
+            return Save();
         }
 
         /// <summary>
@@ -21,6 +29,11 @@ namespace CardExchange.Repository
             return _context.Users.Where(u => u.Id == id).FirstOrDefault();
         }
 
+        public User GetUserByEmail(string email)
+        {
+            return _context.Users.Where(u => u.Email.ToLower() == email.ToLower()).FirstOrDefault();
+        }
+
         /// <summary>
         /// Return all users in DB
         /// </summary>
@@ -28,6 +41,13 @@ namespace CardExchange.Repository
         public ICollection<User> GetUsers()
         {
             return _context.Users.ToList();
+        }
+
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+
+            return saved > 0 ? true : false;
         }
 
         /// <summary>

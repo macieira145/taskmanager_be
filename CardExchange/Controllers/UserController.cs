@@ -1,17 +1,23 @@
 ﻿using CardExchange.Entities;
 using CardExchange.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CardExchange.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : Controller
     {
         private readonly IUserRepository _userRepository;
-        public UserController(IUserRepository userRepository)
+        private readonly IPasswordHasher<User> _passwordHasher;
+
+        public UserController(IUserRepository userRepository, IPasswordHasher<User> passwordHasher)
         {
             _userRepository = userRepository;
+            _passwordHasher = passwordHasher;
         }
 
         /// <summary>
@@ -56,6 +62,40 @@ namespace CardExchange.Controllers
             
             // return the user 
             return Ok(user);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateUser([FromBody] User userCreate)
+        {
+            // checks if user has data
+            if(userCreate == null)
+                return BadRequest(ModelState);
+
+            // gets any user with the same email
+            var user = _userRepository.GetUsers()
+                .Where(u => u.Email == userCreate.Email).FirstOrDefault();
+
+            // checks if user exists 
+            if(user != null)
+            {
+                ModelState.AddModelError("", "User already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            // checks if data is valid
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            // tries to create the user, otherwise throws an error
+            if(!_userRepository.CreateUser(userCreate))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully created");
         }
     }
 }
