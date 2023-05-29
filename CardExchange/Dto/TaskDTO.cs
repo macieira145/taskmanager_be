@@ -9,9 +9,5 @@
         public string Description { get; set; } = null!;
 
         public bool Completed { get; set; } = false;
-
-        public DateTime? Created { get; set; }
-
-        public DateTime? Updated { get; set; }
     }
 }

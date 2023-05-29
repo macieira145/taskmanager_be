@@ -110,15 +110,15 @@ namespace CardExchange.Controllers
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
         public IActionResult UpdateTask(int taskId,
-            [FromBody] Entities.Task task)
+            [FromBody] TaskDTO taskDTO)
         {
             // gets the id of the authenticated user
             int id = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)!.Value);
 
-            if (task == null)
+            if (taskDTO == null)
                 return BadRequest(ModelState);
 
-            if (taskId != task.Id)
+            if (taskId != taskDTO.Id)
                 return BadRequest(ModelState);
 
             if (!_taskRepository.TaskExists(taskId, id))
@@ -126,6 +126,8 @@ namespace CardExchange.Controllers
 
             if (!ModelState.IsValid)
                 return BadRequest();
+
+            var task = new Entities.Task(taskDTO);
 
             if (!_taskRepository.UpdateTask(task))
             {
@@ -135,6 +137,5 @@ namespace CardExchange.Controllers
 
             return NoContent();
         }
-
     }
 }

@@ -28,6 +28,11 @@ namespace CardExchange.Repository
             _context = context;
         }
 
+        /// <summary>
+        /// Performs a user insert on DB
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public bool Register(User user)
         {
             _context.Users.Add(user);
