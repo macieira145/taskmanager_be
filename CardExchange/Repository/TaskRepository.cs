@@ -12,11 +12,22 @@ namespace CardExchange.Repository
             _context = context;
         }
 
-        public bool CreateTask(Entities.Task task)
+        public Entities.Task? CreateTask(Entities.Task task)
         {
             _context.Add(task);
 
-            return Save();
+            if (Save())
+            {
+                return task;
+            }
+            else
+                return null;
+        }
+
+        public bool DeleteTask(Entities.Task task)
+        {
+            _context.Tasks.Remove(task);
+            return _context.SaveChanges() == 1 ? true : false;
         }
 
         /// <summary>
@@ -55,10 +66,16 @@ namespace CardExchange.Repository
             return _context.Tasks.Any(t => t.Id == id && t.UsersId == userId);
         }
 
-        public bool UpdateTask(Entities.Task task)
+        public Entities.Task? UpdateTask(Entities.Task task)
         {
             _context.Update(task);
-            return Save();
+
+            if (Save())
+            {
+                return task;
+            }
+            else
+                return null;
         }
     }
 }

@@ -7,8 +7,9 @@ namespace CardExchange.Interfaces
         ICollection<Entities.Task> GetTasks(int userId);
         Entities.Task GetTask(int id, int userId);
         bool TaskExists(int id, int userId);    
-        bool CreateTask(Entities.Task task);
-        bool UpdateTask(Entities.Task task);
+        Entities.Task CreateTask(Entities.Task task);
+        Entities.Task UpdateTask(Entities.Task task);
+        bool DeleteTask(Entities.Task id);
         bool Save();
     }
 }

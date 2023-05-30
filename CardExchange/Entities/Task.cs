@@ -27,6 +27,8 @@ public partial class Task
 
     public Task(TaskDTO taskDTO)
     {
+        if(taskDTO.Id is not null)
+            this.Id = (int)taskDTO.Id;
         this.Title = taskDTO.Title;
         this.Description = taskDTO.Description;
         this.Completed = taskDTO.Completed;
